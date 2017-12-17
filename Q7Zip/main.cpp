@@ -1,4 +1,4 @@
-#include "q7zip.h"
+#include "q7zip_window.h"
 #include <QApplication>
 
 #ifdef VLD_ENABLED
@@ -9,7 +9,7 @@ int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
     QApplication::setStyle(QStyleFactory::create("Fusion"));
-    Q7Zip w;
+    Q7Zip_Window w;
 
     // Remove "?" Button from QDialog
     Qt::WindowFlags flags = Qt::Dialog;

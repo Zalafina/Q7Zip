@@ -40,13 +40,53 @@ DEFINES += QT_DEPRECATED_WARNINGS
 # You can also select to disable deprecated APIs only up to a certain version of Qt.
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
+# For LZMA SDK 7z library (7zra.lib/7zra.dll)
+DEFINES += _UNICODE
 
-SOURCES += main.cpp\
-        q7zip.cpp
+INCLUDEPATH += $$PWD/7z_sdk/include
 
-HEADERS  += q7zip.h
+LIBS        += -L$$PWD/7z_sdk/lib
+LIBS        += 7zra.lib
 
-FORMS    += q7zip.ui
+
+SOURCES += \
+    main.cpp \
+    q7zip_window.cpp \
+    q7zip.cpp \
+    7z_sdk/src/FileStreams.cpp
+
+HEADERS  += \
+    q7zip_window.h \
+    q7zip.h
+
+# For LZMA SDK Source Code
+SOURCES += \
+    7z_sdk/src/FileIO.cpp
+
+HEADERS  += \
+    7z_sdk/include/7zTypes.h \
+    7z_sdk/include/Common.h \
+    7z_sdk/include/Compiler.h \
+    7z_sdk/include/Defs.h \
+    7z_sdk/include/FileIO.h \
+    7z_sdk/include/FileName.h \
+    7z_sdk/include/FileStreams.h \
+    7z_sdk/include/IArchive.h \
+    7z_sdk/include/IDecl.h \
+    7z_sdk/include/IProgress.h \
+    7z_sdk/include/IStream.h \
+    7z_sdk/include/MyBuffer.h \
+    7z_sdk/include/MyCom.h \
+    7z_sdk/include/MyString.h \
+    7z_sdk/include/MyTypes.h \
+    7z_sdk/include/MyUnknown.h \
+    7z_sdk/include/MyVector.h \
+    7z_sdk/include/MyWindows.h \
+    7z_sdk/include/PropID.h \
+    7z_sdk/include/StdAfx.h
+
+FORMS    += \
+    q7zip_window.ui
 
 RESOURCES   += \
     image.qrc
