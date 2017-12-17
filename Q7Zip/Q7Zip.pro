@@ -67,7 +67,6 @@ HEADERS  += \
     7z_sdk/Windows/Defs.h \
     7z_sdk/Windows/FileIO.h \
     7z_sdk/Windows/FileName.h \
-    7z_sdk/Windows/StdAfx.h \
     7z_sdk/Common/Defs.h \
     7z_sdk/Common/MyBuffer.h \
     7z_sdk/Common/MyCom.h \

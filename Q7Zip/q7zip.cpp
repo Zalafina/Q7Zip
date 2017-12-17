@@ -187,29 +187,29 @@ int Q7Zip::compress(QString &archive_name, QStringList &compress_filelist)
         return 1;
     }
 
-    CObjectVector<CDirItem> dirItems;
-    {
-        for (const QString &name : compress_filelist)
-        {
-            CDirItem di;
-            NFind::CFileInfo fi;
-            if (!fi.Find(name.toStdWString().c_str()))
-            {
-                qDebug() << "Can't find file:" << name;
-                return 1;
-            }
+//    CObjectVector<CDirItem> dirItems;
+//    {
+//        for (const QString &name : compress_filelist)
+//        {
+//            CDirItem di;
+//            NFind::CFileInfo fi;
+//            if (!fi.Find(name.toStdWString().c_str()))
+//            {
+//                qDebug() << "Can't find file:" << name;
+//                return 1;
+//            }
 
-            di.Attrib = fi.Attrib;
-            di.Size = fi.Size;
-            di.CTime = fi.CTime;
-            di.ATime = fi.ATime;
-            di.MTime = fi.MTime;
-            di.Name = fs2us(name.toStdWString().c_str());
-            di.FullPath = name.toStdWString().c_str();
-            dirItems.Add(di);
+//            di.Attrib = fi.Attrib;
+//            di.Size = fi.Size;
+//            di.CTime = fi.CTime;
+//            di.ATime = fi.ATime;
+//            di.MTime = fi.MTime;
+//            di.Name = fs2us(name.toStdWString().c_str());
+//            di.FullPath = name.toStdWString().c_str();
+//            dirItems.Add(di);
 
-        }
-    }
+//        }
+//    }
 
     COutFileStream *outFileStreamSpec = new COutFileStream;
     CMyComPtr<IOutStream> outFileStream = outFileStreamSpec;
@@ -226,9 +226,9 @@ int Q7Zip::compress(QString &archive_name, QStringList &compress_filelist)
         return 1;
     }
 
-    CArchiveUpdateCallback *updateCallbackSpec = new CArchiveUpdateCallback;
-    CMyComPtr<IArchiveUpdateCallback2> updateCallback(updateCallbackSpec);
-    updateCallbackSpec->Init(&dirItems);
+//    CArchiveUpdateCallback *updateCallbackSpec = new CArchiveUpdateCallback;
+//    CMyComPtr<IArchiveUpdateCallback2> updateCallback(updateCallbackSpec);
+//    updateCallbackSpec->Init(&dirItems);
 
 #if 0
     NDLL::CLibrary lib;
