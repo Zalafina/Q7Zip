@@ -4,7 +4,7 @@
 #define __IDECL_H
 
 #include <initguid.h>
-#include "MyUnknown.h"
+#include "Common/MyUnknown.h"
 
 #define k_7zip_GUID_Data1 0x23170F69
 #define k_7zip_GUID_Data2 0x40C1

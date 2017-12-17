@@ -3,14 +3,14 @@
 #ifndef __WINDOWS_FILE_IO_H
 #define __WINDOWS_FILE_IO_H
 
-#include "MyWindows.h"
+#include "../Common/MyWindows.h"
 
 #if defined(_WIN32) && !defined(UNDER_CE)
 #include <winioctl.h>
 #endif
 
-#include "MyString.h"
-#include "MyBuffer.h"
+#include "../Common/MyString.h"
+#include "../Common/MyBuffer.h"
 
 #include "Defs.h"
 

@@ -7,17 +7,17 @@
 #define USE_WIN_FILE
 #endif
 
-#include "MyString.h"
+#include "../../Common/MyString.h"
 
 #ifdef USE_WIN_FILE
-#include "FileIO.h"
+#include "../../Windows/FileIO.h"
 #else
 #include "../../Common/C_FileIO.h"
 #endif
 
-#include "MyCom.h"
+#include "../../Common/MyCom.h"
 
-#include "IStream.h"
+#include "../IStream.h"
 
 #ifdef _WIN32
 typedef UINT_PTR My_UINT_PTR;

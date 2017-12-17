@@ -3,9 +3,9 @@
 #ifndef __IARCHIVE_H
 #define __IARCHIVE_H
 
-#include "IProgress.h"
-#include "IStream.h"
-#include "PropID.h"
+#include "../IProgress.h"
+#include "../IStream.h"
+#include "../PropID.h"
 
 #define ARCHIVE_INTERFACE_SUB(i, base, x) DECL_INTERFACE_SUB(i, base, 6, x)
 #define ARCHIVE_INTERFACE(i, x) ARCHIVE_INTERFACE_SUB(i, IUnknown, x)

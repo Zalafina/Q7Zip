@@ -1,6 +1,6 @@
 // Windows/FileIO.cpp
 
-#include "StdAfx.h"
+//#include "StdAfx.h"
 
 #ifdef SUPPORT_DEVICE_FILE
 #include "../../C/Alloc.h"

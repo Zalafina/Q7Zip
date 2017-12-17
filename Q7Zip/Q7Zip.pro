@@ -43,17 +43,16 @@ DEFINES += QT_DEPRECATED_WARNINGS
 # For LZMA SDK 7z library (7zra.lib/7zra.dll)
 DEFINES += _UNICODE
 
-INCLUDEPATH += $$PWD/7z_sdk/include
+INCLUDEPATH += $$PWD/7z_sdk
 
-LIBS        += -L$$PWD/7z_sdk/lib
-LIBS        += 7zra.lib
+#LIBS        += -L$$PWD/7z_sdk/lib
+#LIBS        += 7zra.lib
 
 
 SOURCES += \
     main.cpp \
     q7zip_window.cpp \
-    q7zip.cpp \
-    7z_sdk/src/FileStreams.cpp
+    q7zip.cpp
 
 HEADERS  += \
     q7zip_window.h \
@@ -61,29 +60,30 @@ HEADERS  += \
 
 # For LZMA SDK Source Code
 SOURCES += \
-    7z_sdk/src/FileIO.cpp
+    7z_sdk/Windows/FileIO.cpp \
+    7z_sdk/7Zip/Common/FileStreams.cpp
 
 HEADERS  += \
-    7z_sdk/include/7zTypes.h \
-    7z_sdk/include/Common.h \
-    7z_sdk/include/Compiler.h \
-    7z_sdk/include/Defs.h \
-    7z_sdk/include/FileIO.h \
-    7z_sdk/include/FileName.h \
-    7z_sdk/include/FileStreams.h \
-    7z_sdk/include/IArchive.h \
-    7z_sdk/include/IDecl.h \
-    7z_sdk/include/IProgress.h \
-    7z_sdk/include/IStream.h \
-    7z_sdk/include/MyBuffer.h \
-    7z_sdk/include/MyCom.h \
-    7z_sdk/include/MyString.h \
-    7z_sdk/include/MyTypes.h \
-    7z_sdk/include/MyUnknown.h \
-    7z_sdk/include/MyVector.h \
-    7z_sdk/include/MyWindows.h \
-    7z_sdk/include/PropID.h \
-    7z_sdk/include/StdAfx.h
+    7z_sdk/Windows/Defs.h \
+    7z_sdk/Windows/FileIO.h \
+    7z_sdk/Windows/FileName.h \
+    7z_sdk/Windows/StdAfx.h \
+    7z_sdk/Common/Defs.h \
+    7z_sdk/Common/MyBuffer.h \
+    7z_sdk/Common/MyCom.h \
+    7z_sdk/Common/MyString.h \
+    7z_sdk/Common/MyTypes.h \
+    7z_sdk/Common/MyUnknown.h \
+    7z_sdk/Common/MyVector.h \
+    7z_sdk/Common/MyWindows.h \
+    7z_sdk/C/7zVersion.h \
+    7z_sdk/C/7zTypes.h \
+    7z_sdk/7zip/IDecl.h \
+    7z_sdk/7zip/IProgress.h \
+    7z_sdk/7zip/IStream.h \
+    7z_sdk/7zip/PropID.h \
+    7z_sdk/7zip/Archive/IArchive.h \
+    7z_sdk/7zip/Common/FileStreams.h
 
 FORMS    += \
     q7zip_window.ui

@@ -3,7 +3,7 @@
 #ifndef __WINDOWS_DEFS_H
 #define __WINDOWS_DEFS_H
 
-#include "MyWindows.h"
+#include "../Common/MyWindows.h"
 
 #ifdef _WIN32
 inline bool LRESULTToBool(LRESULT v) { return (v != FALSE); }

@@ -3,7 +3,7 @@
 #ifndef __COMMON_MY_TYPES_H
 #define __COMMON_MY_TYPES_H
 
-#include "7zTypes.h"
+#include "C/7zTypes.h"
 
 typedef int HRes;
 

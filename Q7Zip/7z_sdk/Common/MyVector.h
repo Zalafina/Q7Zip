@@ -4,6 +4,7 @@
 #define __COMMON_MY_VECTOR_H
 
 #include <string.h>
+#include "Common/Common.h"
 
 template <class T>
 class CRecordVector

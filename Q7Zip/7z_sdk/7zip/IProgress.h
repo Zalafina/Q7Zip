@@ -3,7 +3,7 @@
 #ifndef __IPROGRESS_H
 #define __IPROGRESS_H
 
-#include "MyTypes.h"
+#include "Common/MyTypes.h"
 
 #include "IDecl.h"
 
