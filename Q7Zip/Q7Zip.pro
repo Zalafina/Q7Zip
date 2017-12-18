@@ -45,8 +45,9 @@ DEFINES += _UNICODE
 
 INCLUDEPATH += $$PWD/7z_sdk
 
-#LIBS        += -L$$PWD/7z_sdk/lib
-#LIBS        += 7zra.lib
+# Win x86 libs
+LIBS        += -L$$PWD/win_lib/x86
+LIBS        += OleAut32.lib User32.Lib
 
 
 SOURCES += \
@@ -61,12 +62,18 @@ HEADERS  += \
 # For LZMA SDK Source Code
 SOURCES += \
     7z_sdk/Windows/FileIO.cpp \
-    7z_sdk/7Zip/Common/FileStreams.cpp
+    7z_sdk/Windows/PropVariant.cpp \
+    7z_sdk/Common/MyWindows.cpp \
+    7z_sdk/Common/MyString.cpp \
+    7z_sdk/7Zip/Common/FileStreams.cpp \
+    7z_sdk/Common/IntToString.cpp
+    #7z_sdk/Common/StringConvert.cpp
 
 HEADERS  += \
     7z_sdk/Windows/Defs.h \
     7z_sdk/Windows/FileIO.h \
     7z_sdk/Windows/FileName.h \
+    7z_sdk/Common/Common.h \
     7z_sdk/Common/Defs.h \
     7z_sdk/Common/MyBuffer.h \
     7z_sdk/Common/MyCom.h \
@@ -77,6 +84,8 @@ HEADERS  += \
     7z_sdk/Common/MyWindows.h \
     7z_sdk/C/7zVersion.h \
     7z_sdk/C/7zTypes.h \
+    7z_sdk/C/Compiler.h \
+    7z_sdk/C/CpuArch.h \
     7z_sdk/7zip/IDecl.h \
     7z_sdk/7zip/IProgress.h \
     7z_sdk/7zip/IStream.h \

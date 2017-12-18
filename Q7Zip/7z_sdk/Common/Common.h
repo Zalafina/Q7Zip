@@ -17,7 +17,7 @@ you can change this h file or h files included in this file.
 */
 
 // compiler pragmas to disable some warnings
-//#include "../../C/Compiler.h"
+#include "C/Compiler.h"
 
 // it's <windows.h> or code that defines windows things, if it's not _WIN32
 #include "MyWindows.h"

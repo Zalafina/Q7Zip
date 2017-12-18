@@ -1,6 +1,6 @@
 // FileStreams.cpp
 
-//#include "StdAfx.h"
+#include "StdAfx.h"
 
 #ifndef _WIN32
 #include <fcntl.h>
