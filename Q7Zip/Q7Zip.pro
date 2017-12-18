@@ -61,13 +61,17 @@ HEADERS  += \
 
 # For LZMA SDK Source Code
 SOURCES += \
+    7z_sdk/Windows/FileDir.cpp \
+    7z_sdk/Windows/FileFind.cpp \
     7z_sdk/Windows/FileIO.cpp \
+    7z_sdk/Windows/FileName.cpp \
     7z_sdk/Windows/PropVariant.cpp \
+    7z_sdk/Windows/PropVariantConv.cpp \
     7z_sdk/Common/MyWindows.cpp \
     7z_sdk/Common/MyString.cpp \
     7z_sdk/7Zip/Common/FileStreams.cpp \
-    7z_sdk/Common/IntToString.cpp
-    #7z_sdk/Common/StringConvert.cpp
+    7z_sdk/Common/IntToString.cpp \
+    7z_sdk/Common/StringConvert.cpp
 
 HEADERS  += \
     7z_sdk/Windows/Defs.h \

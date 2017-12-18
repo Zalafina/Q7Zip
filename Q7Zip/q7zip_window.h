@@ -3,6 +3,8 @@
 
 #include <QStyleFactory>
 #include <QDialog>
+#include <QFileDialog>
+#include <QMessageBox>
 #include <QDebug>
 #include "q7zip.h"
 

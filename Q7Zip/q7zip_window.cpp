@@ -16,14 +16,33 @@ Q7Zip_Window::~Q7Zip_Window()
 
 void Q7Zip_Window::on_Make7zButton_clicked()
 {
-    QString archinve_filename = "test.7z";
-    QString temp_filename = "QKeyMapper.exe";
-    QStringList compress_filelist;
-    compress_filelist.append(temp_filename);
-    m_7Zip.compress(archinve_filename, compress_filelist);
+    QString filename = QFileDialog::getOpenFileName(this,
+                                                    "Open File to be Compressed",
+                                                    NULL,
+                                                    "All Files (*.*)");
+
+    if (filename.length() != 0){
+        QFileInfo fileinfo(filename);
+        QString archive_filename = fileinfo.absolutePath() + "/" + fileinfo.baseName() + ".7z";
+
+        QStringList compress_filelist;
+        compress_filelist.append(filename);
+
+        bool compress_result;
+        compress_result = m_7Zip.compress(archive_filename, compress_filelist);
+
+        if (0 == compress_result){
+            qDebug() << archive_filename << "compress complete.";
+            QString message = "<html><head/><body><p align=\"center\">" + fileinfo.baseName() + ".7z" "</p><p align=\"center\"> compress complete.</p></body></html>";
+            QMessageBox::information(this, "Q7Zip", message);
+        }
+    }
+    else{
+    }
 }
 
 void Q7Zip_Window::on_Extract7zButton_clicked()
 {
-
+    QString archinve_filename = "test.7z";
+    m_7Zip.extract(archinve_filename);
 }
