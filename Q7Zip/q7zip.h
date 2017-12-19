@@ -3,6 +3,7 @@
 
 #include <QObject>
 #include <QLibrary>
+#include <QFileInfo>
 #include <QDebug>
 
 class Q7Zip : public QObject

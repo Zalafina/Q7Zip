@@ -606,10 +606,11 @@ HRESULT CArchiveUpdateCallback::Finilize()
 
 static void GetStream2(const wchar_t *name)
 {
-    Print("Compressing  ");
     if (name[0] == 0)
         name = kEmptyFileAlias;
-    Print(name);
+//    Print("Compressing  ");
+//    Print(name);
+    qDebug() << "Compressing " << QString::fromWCharArray(name);
 }
 
 STDMETHODIMP CArchiveUpdateCallback::GetStream(UInt32 index, ISequentialInStream **inStream)
@@ -730,6 +731,7 @@ int Q7Zip::compress(QString &archive_name, QStringList &compress_filelist)
     {
         for (const QString &name : compress_filelist)
         {
+            QString compress_name;
             CDirItem di;
             NFind::CFileInfo fi;
             if (!fi.Find(name.toStdWString().c_str()))
@@ -738,12 +740,23 @@ int Q7Zip::compress(QString &archive_name, QStringList &compress_filelist)
                 return 1;
             }
 
+            QFileInfo fileinfo(name);
+            if (1 == name.indexOf(':')){
+                compress_name = fileinfo.fileName();
+            }
+            else if (true == name.startsWith("//")){
+                compress_name = fileinfo.fileName();
+            }
+            else{
+                compress_name = name;
+            }
+
             di.Attrib = fi.Attrib;
             di.Size = fi.Size;
             di.CTime = fi.CTime;
             di.ATime = fi.ATime;
             di.MTime = fi.MTime;
-            di.Name = fs2us(name.toStdWString().c_str());
+            di.Name = fs2us(compress_name.toStdWString().c_str());
             di.FullPath = name.toStdWString().c_str();
             dirItems.Add(di);
 
