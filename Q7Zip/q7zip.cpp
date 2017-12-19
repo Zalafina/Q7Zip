@@ -15,8 +15,6 @@
 
 #include "C/7zVersion.h"
 
-#define kDllName "7z.dll"
-
 DEFINE_GUID(CLSID_CFormat7z,
   0x23170F69, 0x40C1, 0x278A, 0x10, 0x00, 0x00, 0x01, 0x10, 0x07, 0x00, 0x00);
 DEFINE_GUID(CLSID_CFormatXz,
@@ -703,18 +701,26 @@ Q7Zip::Q7Zip(QObject *parent) :
     QObject(parent),
     m_7zLib(kDllName)
 {
-    bool loadResult;
-    loadResult = m_7zLib.load();
-    Q_UNUSED(loadResult);
 
-#ifdef DEBUG_LOGOUT_ON
+}
+
+int Q7Zip::init(void)
+{
+    int init_result = 1;
+    bool loadResult = m_7zLib.load();
+
     if (true == loadResult){
+#ifdef DEBUG_LOGOUT_ON
         qDebug() << "Q7Zip" << kDllName << "load success.";
+#endif
+        init_result = 0;
     }
     else{
         qDebug() << "Q7Zip" << kDllName << "load failure!!!";
+        init_result = 1;
     }
-#endif
+
+    return init_result;
 }
 
 int Q7Zip::compress(QString &archive_name, QStringList &compress_filelist)

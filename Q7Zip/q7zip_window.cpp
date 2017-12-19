@@ -7,6 +7,14 @@ Q7Zip_Window::Q7Zip_Window(QWidget *parent) :
     m_7Zip()
 {
     ui->setupUi(this);
+
+    int init_result;
+    init_result = m_7Zip.init();
+
+    if (init_result != 0){
+        QString message = "<html><head/><body><p align=\"center\">" kDllName "</p><p align=\"center\"> Load Failure!!!</p></body></html>";
+        QMessageBox::critical(this, "Q7Zip", message);
+    }
 }
 
 Q7Zip_Window::~Q7Zip_Window()
