@@ -805,12 +805,85 @@ int Q7Zip::compress(QString &archive_name, QStringList &compress_filelist)
     return 0;
 }
 
-int Q7Zip::extract(QString &archive_name)
+int Q7Zip::extract(QString &archive_name, QString &output_path)
 {
+    Func_CreateObject createObjectFunc = (Func_CreateObject)m_7zLib.resolve("CreateObject");
+    if (!createObjectFunc)
+    {
+        qDebug("Can not get CreateObject");
+        return 1;
+    }
+
+    CMyComPtr<IInArchive> archive;
+    if (createObjectFunc(&CLSID_Format, &IID_IInArchive, (void **)&archive) != S_OK)
+    {
+        PrintError("Can not get class object");
+        return 1;
+    }
+
+    CInFileStream *fileSpec = new CInFileStream;
+    CMyComPtr<IInStream> file = fileSpec;
+
+    if (!fileSpec->Open(archive_name.toStdWString().c_str()))
+    {
+        PrintError("Can not open archive file", archive_name.toStdWString().c_str());
+        return 1;
+    }
+
+    {
+        CArchiveOpenCallback *openCallbackSpec = new CArchiveOpenCallback;
+        CMyComPtr<IArchiveOpenCallback> openCallback(openCallbackSpec);
+        openCallbackSpec->PasswordIsDefined = false;
+        // openCallbackSpec->PasswordIsDefined = true;
+        // openCallbackSpec->Password = L"1";
+
+        const UInt64 scanSize = 1 << 23;
+        if (archive->Open(file, &scanSize, openCallback) != S_OK)
+        {
+            PrintError("Can not open file as archive", archive_name.toStdWString().c_str());
+            return 1;
+        }
+    }
+
+    // Extract command
+    CArchiveExtractCallback *extractCallbackSpec = new CArchiveExtractCallback;
+    CMyComPtr<IArchiveExtractCallback> extractCallback(extractCallbackSpec);
+    extractCallbackSpec->Init(archive, FString(output_path.toStdWString().c_str())); // second parameter is output folder path
+    extractCallbackSpec->PasswordIsDefined = false;
+    // extractCallbackSpec->PasswordIsDefined = true;
+    // extractCallbackSpec->Password = "1";
+
+    /*
+      const wchar_t *names[] =
+      {
+        L"mt",
+        L"mtf"
+      };
+      const unsigned kNumProps = sizeof(names) / sizeof(names[0]);
+      NCOM::CPropVariant values[kNumProps] =
+      {
+        (UInt32)1,
+        false
+      };
+      CMyComPtr<ISetProperties> setProperties;
+      archive->QueryInterface(IID_ISetProperties, (void **)&setProperties);
+      if (setProperties)
+        setProperties->SetProperties(names, values, kNumProps);
+      */
+
+    HRESULT result = archive->Extract(NULL, (UInt32)(Int32)(-1), false, extractCallback);
+
+    if (result != S_OK)
+    {
+        PrintError("Extract Error");
+        return 1;
+    }
+
     return 0;
 }
 
 int Q7Zip::showfilelist(QString &archive_name)
 {
+    Q_UNUSED(archive_name);
     return 0;
 }

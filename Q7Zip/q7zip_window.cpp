@@ -33,7 +33,7 @@ void Q7Zip_Window::on_Make7zButton_clicked()
 
         if (0 == compress_result){
             qDebug() << archive_filename << "compress complete.";
-            QString message = "<html><head/><body><p align=\"center\">" + fileinfo.baseName() + ".7z" "</p><p align=\"center\"> compress complete.</p></body></html>";
+            QString message = "<html><head/><body><p align=\"center\">" + fileinfo.baseName() + ".7z" "</p><p align=\"center\"> Compress Complete.</p></body></html>";
             QMessageBox::information(this, "Q7Zip", message);
         }
     }
@@ -43,6 +43,25 @@ void Q7Zip_Window::on_Make7zButton_clicked()
 
 void Q7Zip_Window::on_Extract7zButton_clicked()
 {
-    QString archinve_filename = "test.7z";
-    m_7Zip.extract(archinve_filename);
+    QString filename = QFileDialog::getOpenFileName(this,
+                                                    "Open File to be Extracted",
+                                                    NULL,
+                                                    "7z Files (*.7z)");
+
+    if (true == QFileInfo::exists(filename)){
+        QFileInfo fileinfo(filename);
+        QString archive_filename = filename;
+        QString output_path;
+        if (true == QFileInfo::exists(fileinfo.absolutePath())){
+            output_path = fileinfo.absolutePath();
+        }
+        bool extrace_result;
+        extrace_result = m_7Zip.extract(archive_filename, output_path);
+
+        if (0 == extrace_result){
+            qDebug() << archive_filename << "extract complete.";
+            QString message = "<html><head/><body><p align=\"center\">" + fileinfo.fileName() + "</p><p align=\"center\"> Extract Complete.</p></body></html>";
+            QMessageBox::information(this, "Q7Zip", message);
+        }
+    }
 }

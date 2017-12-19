@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Dialog</string>
+   <string>Q7Zip</string>
   </property>
   <widget class="QPushButton" name="Make7zButton">
    <property name="geometry">
