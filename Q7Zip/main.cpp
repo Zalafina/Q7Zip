@@ -11,13 +11,20 @@ int main(int argc, char *argv[])
     QApplication::setStyle(QStyleFactory::create("Fusion"));
     Q7Zip_Window w;
 
-    // Remove "?" Button from QDialog
-    Qt::WindowFlags flags = Qt::Dialog;
-    flags |= Qt::WindowCloseButtonHint;
-    flags |= Qt::WindowMinimizeButtonHint;
-    w.setWindowFlags(flags);
+    int init_result = w.init();
 
-    w.show();
+    if (0 == init_result){
+        // Remove "?" Button from QDialog
+        Qt::WindowFlags flags = Qt::Dialog;
+        flags |= Qt::WindowCloseButtonHint;
+        flags |= Qt::WindowMinimizeButtonHint;
+        w.setWindowFlags(flags);
 
-    return a.exec();
+        w.show();
+
+        return a.exec();
+    }
+    else{
+        return -1;
+    }
 }

@@ -20,6 +20,8 @@ public:
     explicit Q7Zip_Window(QWidget *parent = 0);
     ~Q7Zip_Window();
 
+    int init(void);
+
 private slots:
     void on_Make7zButton_clicked();
 

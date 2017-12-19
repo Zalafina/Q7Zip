@@ -7,19 +7,26 @@ Q7Zip_Window::Q7Zip_Window(QWidget *parent) :
     m_7Zip()
 {
     ui->setupUi(this);
-
-    int init_result;
-    init_result = m_7Zip.init();
-
-    if (init_result != 0){
-        QString message = "<html><head/><body><p align=\"center\">" kDllName "</p><p align=\"center\"> Load Failure!!!</p></body></html>";
-        QMessageBox::critical(this, "Q7Zip", message);
-    }
 }
 
 Q7Zip_Window::~Q7Zip_Window()
 {
     delete ui;
+}
+
+int Q7Zip_Window::init(void)
+{
+    int init_result;
+    init_result = m_7Zip.init();
+
+    if (init_result != 0){
+        QString message = "<html><head/><body><p align=\"center\">" kDllName "</p><p align=\"center\"> Load Failure!!!</p></body></html>";
+        //QMessageBox::critical(this, "Q7Zip", message);
+        /* Set parent pointer to NULL for display messagebox at the center of the screen */
+        QMessageBox::critical(NULL, "Q7Zip", message);
+    }
+
+    return init_result;
 }
 
 void Q7Zip_Window::on_Make7zButton_clicked()
