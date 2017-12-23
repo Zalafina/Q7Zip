@@ -68,7 +68,7 @@ void Q7Zip_Window::on_Extract7zButton_clicked()
         QString archive_filename = filename;
         QString output_path;
         if (true == QFileInfo::exists(fileinfo.absolutePath())){
-            output_path = fileinfo.absolutePath();
+            output_path = fileinfo.absolutePath() + "/" + fileinfo.baseName();
         }
         bool extrace_result;
         extrace_result = m_7Zip.extract(archive_filename, output_path);
