@@ -3,8 +3,8 @@
 #ifndef __IPASSWORD_H
 #define __IPASSWORD_H
 
-#include "Common/MyTypes.h"
-#include "Common/MyUnknown.h"
+#include "../Common/MyTypes.h"
+#include "../Common/MyUnknown.h"
 
 #include "IDecl.h"
 

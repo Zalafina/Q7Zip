@@ -3,8 +3,8 @@
 #ifndef __ISTREAM_H
 #define __ISTREAM_H
 
-#include "Common/MyTypes.h"
-#include "Common/MyWindows.h"
+#include "../Common/MyTypes.h"
+#include "../Common/MyWindows.h"
 
 #include "IDecl.h"
 

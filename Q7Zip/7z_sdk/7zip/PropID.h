@@ -3,7 +3,7 @@
 #ifndef __7ZIP_PROP_ID_H
 #define __7ZIP_PROP_ID_H
 
-#include "Common/MyTypes.h"
+#include "../Common/MyTypes.h"
 
 enum
 {
