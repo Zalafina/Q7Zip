@@ -15,6 +15,7 @@ public:
     explicit Q7Zip(QObject *parent = 0);
 
     int init(void);
+    QString lzma_sdk_version(void);
 
     int compress(const QString &archive_name, const QStringList &compress_filelist, const QString &working_path);
     int extract(const QString &archive_name, const QString &output_path);

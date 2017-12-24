@@ -595,7 +595,6 @@ HRESULT CArchiveUpdateCallback::Finilize()
 {
     if (m_NeedBeClosed)
     {
-        SetCompleted(&FileSize);
         PrintNewLine();
         m_NeedBeClosed = false;
     }
@@ -721,6 +720,11 @@ int Q7Zip::init(void)
     }
 
     return init_result;
+}
+
+QString Q7Zip::lzma_sdk_version(void)
+{
+    return QString(MY_VERSION " ("  MY_DATE  ")");
 }
 
 int Q7Zip::compress(const QString &archive_name, const QStringList &compress_filelist, const QString &working_path)

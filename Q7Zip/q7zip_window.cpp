@@ -26,6 +26,9 @@ int Q7Zip_Window::init(void)
         /* Set parent pointer to NULL for display messagebox at the center of the screen */
         QMessageBox::critical(NULL, "Q7Zip", message);
     }
+    else{
+        ui->LZMA_SDK_Label->setText(m_7Zip.lzma_sdk_version());
+    }
 
     return init_result;
 }
