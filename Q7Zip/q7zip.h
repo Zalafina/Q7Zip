@@ -16,9 +16,9 @@ public:
 
     int init(void);
 
-    int compress(QString &archive_name, QStringList &compress_filelist);
-    int extract(QString &archive_name, QString &output_path);
-    int showfilelist(QString &archive_name);
+    int compress(const QString &archive_name, const QStringList &compress_filelist, const QString &working_path);
+    int extract(const QString &archive_name, const QString &output_path);
+    int showfilelist(const QString &archive_name);
 
 signals:
 

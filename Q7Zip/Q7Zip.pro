@@ -53,11 +53,13 @@ LIBS        += OleAut32.lib User32.Lib
 SOURCES += \
     main.cpp \
     q7zip_window.cpp \
-    q7zip.cpp
+    q7zip.cpp \
+    mfiledialog.cpp
 
 HEADERS  += \
     q7zip_window.h \
-    q7zip.h
+    q7zip.h \
+    mfiledialog.h
 
 # For LZMA SDK Source Code
 SOURCES += \

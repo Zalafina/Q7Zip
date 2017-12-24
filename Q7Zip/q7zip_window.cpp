@@ -1,4 +1,5 @@
 #include "q7zip_window.h"
+#include "mfiledialog.h"
 #include "ui_q7zip_window.h"
 
 Q7Zip_Window::Q7Zip_Window(QWidget *parent) :
@@ -31,6 +32,7 @@ int Q7Zip_Window::init(void)
 
 void Q7Zip_Window::on_Make7zButton_clicked()
 {
+#if 0
     QString filename = QFileDialog::getOpenFileName(this,
                                                     "Open File to be Compressed",
                                                     NULL,
@@ -53,6 +55,63 @@ void Q7Zip_Window::on_Make7zButton_clicked()
         }
     }
     else{
+    }
+#endif
+
+    MFileDialog fileDialog;
+    if (fileDialog.exec() == QDialog::Accepted)
+    {
+        QStringList compress_filelist;
+        QStringList selected_files = fileDialog.selectedFiles();
+        selected_files.sort(Qt::CaseInsensitive);
+        for(const QString &filename : selected_files){
+            compress_filelist.append(filename);
+
+            QFileInfo fileinfo(filename);
+            if (true == fileinfo.isDir()){
+                QFileInfoList list = MFileDialog::GetFileList(filename);
+
+                for (const QFileInfo &finfo : list){
+                    compress_filelist.append(finfo.absoluteFilePath());
+                }
+            }
+        }
+
+#ifdef DEBUG_LOGOUT_ON
+        qDebug().noquote() << "";
+        qDebug().noquote() << "Compress Filelist Start >>>";
+        for(const QString &filename : compress_filelist){
+            qDebug().noquote() << filename;
+        }
+        qDebug().noquote() << "Compress Filelist End   <<<";
+        qDebug().noquote() << "";
+#endif
+
+        if (compress_filelist.size() > 0){
+            QString archive_filename;
+            QString woring_path;
+            QString first_filename = selected_files.at(0);
+            QFileInfo fileinfo(first_filename);
+            QFileInfo path_fileinfo(fileinfo.absolutePath());
+
+            if (1 == selected_files.size()){
+                archive_filename = fileinfo.absolutePath() + "/" + fileinfo.completeBaseName() + ".7z";
+            }
+            else{
+                archive_filename = fileinfo.absolutePath() + "/" + path_fileinfo.completeBaseName() + ".7z";
+            }
+            woring_path = fileinfo.absolutePath() + "/";
+
+            bool compress_result;
+            compress_result = m_7Zip.compress(archive_filename, compress_filelist, woring_path);
+
+            if (0 == compress_result){
+                QFileInfo archive_fileinfo(archive_filename);
+                qDebug() << archive_filename << "compress complete.";
+                QString message = "<html><head/><body><p align=\"center\">" + archive_fileinfo.fileName() + "</p><p align=\"center\"> Compress Complete.</p></body></html>";
+                QMessageBox::information(this, "Q7Zip", message);
+            }
+        }
     }
 }
 

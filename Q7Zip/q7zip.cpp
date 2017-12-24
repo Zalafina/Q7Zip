@@ -723,9 +723,8 @@ int Q7Zip::init(void)
     return init_result;
 }
 
-int Q7Zip::compress(QString &archive_name, QStringList &compress_filelist)
+int Q7Zip::compress(const QString &archive_name, const QStringList &compress_filelist, const QString &working_path)
 {
-    Q_UNUSED(compress_filelist);
     Func_CreateObject createObjectFunc = (Func_CreateObject)m_7zLib.resolve("CreateObject");
     if (!createObjectFunc)
     {
@@ -746,15 +745,9 @@ int Q7Zip::compress(QString &archive_name, QStringList &compress_filelist)
                 return 1;
             }
 
-            QFileInfo fileinfo(name);
-            if (1 == name.indexOf(':')){
-                compress_name = fileinfo.fileName();
-            }
-            else if (true == name.startsWith("//")){
-                compress_name = fileinfo.fileName();
-            }
-            else{
-                compress_name = name;
+            if (true == name.startsWith(working_path)){
+                QString temp_filename = name;
+                compress_name = temp_filename.remove(working_path);
             }
 
             di.Attrib = fi.Attrib;
@@ -765,7 +758,6 @@ int Q7Zip::compress(QString &archive_name, QStringList &compress_filelist)
             di.Name = fs2us(compress_name.toStdWString().c_str());
             di.FullPath = name.toStdWString().c_str();
             dirItems.Add(di);
-
         }
     }
 
@@ -811,7 +803,7 @@ int Q7Zip::compress(QString &archive_name, QStringList &compress_filelist)
     return 0;
 }
 
-int Q7Zip::extract(QString &archive_name, QString &output_path)
+int Q7Zip::extract(const QString &archive_name, const QString &output_path)
 {
     Func_CreateObject createObjectFunc = (Func_CreateObject)m_7zLib.resolve("CreateObject");
     if (!createObjectFunc)
@@ -888,7 +880,7 @@ int Q7Zip::extract(QString &archive_name, QString &output_path)
     return 0;
 }
 
-int Q7Zip::showfilelist(QString &archive_name)
+int Q7Zip::showfilelist(const QString &archive_name)
 {
     Q_UNUSED(archive_name);
     return 0;
