@@ -252,7 +252,10 @@ STDMETHODIMP CArchiveExtractCallback::SetTotal(UInt64 size)
 
 STDMETHODIMP CArchiveExtractCallback::SetCompleted(const UInt64 * completeValue)
 {
+    Q_UNUSED(completeValue);
+#ifdef DEBUG_LOGOUT_ON
     qDebug("Extract %.2f%%", static_cast<float>(*completeValue) / FileSize * 100.0f );
+#endif
     return S_OK;
 }
 
@@ -376,13 +379,24 @@ STDMETHODIMP CArchiveExtractCallback::PrepareOperation(Int32 askExtractMode)
     {
     case NArchive::NExtract::NAskMode::kExtract:  _extractMode = true; break;
     };
+    QString filepath = QString::fromWCharArray(_filePath.Ptr());
+    filepath.replace(QString("\\"), QChar('/'));
     switch (askExtractMode)
     {
-    case NArchive::NExtract::NAskMode::kExtract:  Print(kExtractingString); break;
-    case NArchive::NExtract::NAskMode::kTest:  Print(kTestingString); break;
-    case NArchive::NExtract::NAskMode::kSkip:  Print(kSkippingString); break;
+    case NArchive::NExtract::NAskMode::kExtract:
+        //Print(kExtractingString);
+        qDebug() << kExtractingString << filepath;
+        break;
+    case NArchive::NExtract::NAskMode::kTest:
+        //Print(kTestingString);
+        qDebug() << kTestingString << filepath;
+        break;
+    case NArchive::NExtract::NAskMode::kSkip:
+        //Print(kSkippingString);
+        qDebug() << kSkippingString << filepath;
+        break;
     };
-    Print(_filePath);
+    //Print(_filePath);
     return S_OK;
 }
 
@@ -547,7 +561,10 @@ STDMETHODIMP CArchiveUpdateCallback::SetTotal(UInt64 size)
 
 STDMETHODIMP CArchiveUpdateCallback::SetCompleted(const UInt64 * completeValue)
 {
+    Q_UNUSED(completeValue);
+#ifdef DEBUG_LOGOUT_ON
     qDebug("Compress %.2f%%", static_cast<float>(*completeValue) / FileSize * 100.0f );
+#endif
     return S_OK;
 }
 
@@ -607,7 +624,9 @@ static void GetStream2(const wchar_t *name)
         name = kEmptyFileAlias;
 //    Print("Compressing  ");
 //    Print(name);
+#ifdef DEBUG_LOGOUT_ON
     qDebug() << "Compressing " << QString::fromWCharArray(name);
+#endif
 }
 
 STDMETHODIMP CArchiveUpdateCallback::GetStream(UInt32 index, ISequentialInStream **inStream)
@@ -700,7 +719,9 @@ Q7Zip::Q7Zip(QObject *parent) :
     QObject(parent),
     m_7zLib(kDllName)
 {
-
+    qRegisterMetaType<Q7Zip::Operation>();
+    static_cast<void>(QObject::connect(this, SIGNAL(operation_signal_compress(const QString, const QStringList, const QString)), this, SLOT(operation_slot_compress(const QString, const QStringList, const QString)), Qt::QueuedConnection));
+    static_cast<void>(QObject::connect(this, SIGNAL(operation_signal_extract(const QString, const QString)), this, SLOT(operation_slot_extract(const QString, const QString)), Qt::QueuedConnection));
 }
 
 int Q7Zip::init(void)
@@ -732,7 +753,7 @@ int Q7Zip::compress(const QString &archive_name, const QStringList &compress_fil
     Func_CreateObject createObjectFunc = (Func_CreateObject)m_7zLib.resolve("CreateObject");
     if (!createObjectFunc)
     {
-        qDebug("Can not get CreateObject");
+        PrintError("Can not get CreateObject");
         return 1;
     }
 
@@ -745,7 +766,7 @@ int Q7Zip::compress(const QString &archive_name, const QStringList &compress_fil
             NFind::CFileInfo fi;
             if (!fi.Find(name.toStdWString().c_str()))
             {
-                qDebug() << "Can't find file:" << name;
+                qDebug() << "Can't find file" << name;
                 return 1;
             }
 
@@ -769,14 +790,14 @@ int Q7Zip::compress(const QString &archive_name, const QStringList &compress_fil
     CMyComPtr<IOutStream> outFileStream = outFileStreamSpec;
     if (!outFileStreamSpec->Create(archive_name.toStdWString().c_str(), true))
     {
-        qDebug("can't create archive file");
+        PrintError("can't create archive file");
         return 1;
     }
 
     CMyComPtr<IOutArchive> outArchive;
     if (createObjectFunc(&CLSID_Format, &IID_IOutArchive, (void **)&outArchive) != S_OK)
     {
-        qDebug("Can not get class object");
+        PrintError("Can not get class object");
         return 1;
     }
 
@@ -812,7 +833,7 @@ int Q7Zip::extract(const QString &archive_name, const QString &output_path)
     Func_CreateObject createObjectFunc = (Func_CreateObject)m_7zLib.resolve("CreateObject");
     if (!createObjectFunc)
     {
-        qDebug("Can not get CreateObject");
+        PrintError("Can not get CreateObject");
         return 1;
     }
 
@@ -888,4 +909,28 @@ int Q7Zip::showfilelist(const QString &archive_name)
 {
     Q_UNUSED(archive_name);
     return 0;
+}
+
+void Q7Zip::threadStarted(void)
+{
+    int init_result = init();
+    emit threadStarted_signal(init_result);
+}
+
+void Q7Zip::operation_slot_compress(const QString archive_name, const QStringList compress_filelist, const QString working_path)
+{
+    int operate_result = 0;
+
+    operate_result = compress(archive_name, compress_filelist, working_path);
+
+    emit operation_result_signal(Q7Zip::Q7ZIP_COMPRESS, archive_name, operate_result);
+}
+
+void Q7Zip::operation_slot_extract(const QString archive_name, const QString output_path)
+{
+    int operate_result = 0;
+
+    operate_result = extract(archive_name, output_path);
+
+    emit operation_result_signal(Q7Zip::Q7ZIP_EXTRACT, archive_name, operate_result);
 }

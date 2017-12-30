@@ -6,6 +6,7 @@
 #include <QFileDialog>
 #include <QMessageBox>
 #include <QDebug>
+#include <QThread>
 #include "q7zip.h"
 
 namespace Ui {
@@ -20,7 +21,9 @@ public:
     explicit Q7Zip_Window(QWidget *parent = 0);
     ~Q7Zip_Window();
 
-    int init(void);
+public slots:
+    void WorkerThread_Started(int result);
+    void Operation_Result(Q7Zip::Operation operation, const QString archive_filename, int result);
 
 private slots:
     void on_Make7zButton_clicked();
@@ -29,7 +32,8 @@ private slots:
 
 private:
     Ui::Q7Zip_Window *ui;
-    Q7Zip m_7Zip;
+    Q7Zip *m_7Zip;
+    QThread *workerThread;
 };
 
 #endif // Q7ZIP_WINDOW_H
