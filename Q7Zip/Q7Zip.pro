@@ -54,12 +54,14 @@ SOURCES += \
     main.cpp \
     q7zip_window.cpp \
     q7zip.cpp \
-    mfiledialog.cpp
+    mfiledialog.cpp \
+    progress_window.cpp
 
 HEADERS  += \
     q7zip_window.h \
     q7zip.h \
-    mfiledialog.h
+    mfiledialog.h \
+    progress_window.h
 
 # For LZMA SDK Source Code
 SOURCES += \
@@ -100,7 +102,8 @@ HEADERS  += \
     7z_sdk/7zip/Common/FileStreams.h
 
 FORMS    += \
-    q7zip_window.ui
+    q7zip_window.ui \
+    progress_window.ui
 
 RESOURCES   += \
     image.qrc

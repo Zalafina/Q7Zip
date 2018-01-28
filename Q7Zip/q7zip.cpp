@@ -247,6 +247,7 @@ void CArchiveExtractCallback::Init(IInArchive *archiveHandler, const FString &di
 STDMETHODIMP CArchiveExtractCallback::SetTotal(UInt64 size)
 {
     FileSize = size;
+    emit Q7Zip::getInstance()->extract_filesize_signal(FileSize);
     return S_OK;
 }
 
@@ -256,6 +257,7 @@ STDMETHODIMP CArchiveExtractCallback::SetCompleted(const UInt64 * completeValue)
 #ifdef DEBUG_LOGOUT_ON
     qDebug("Extract %.2f%%", static_cast<float>(*completeValue) / FileSize * 100.0f );
 #endif
+    emit Q7Zip::getInstance()->extract_completeValue_signal(*completeValue);
     return S_OK;
 }
 
@@ -386,6 +388,7 @@ STDMETHODIMP CArchiveExtractCallback::PrepareOperation(Int32 askExtractMode)
     case NArchive::NExtract::NAskMode::kExtract:
         //Print(kExtractingString);
         qDebug() << kExtractingString << filepath;
+        emit Q7Zip::getInstance()->extracting_filename_signal(filepath);
         break;
     case NArchive::NExtract::NAskMode::kTest:
         //Print(kTestingString);
@@ -556,6 +559,7 @@ public:
 STDMETHODIMP CArchiveUpdateCallback::SetTotal(UInt64 size)
 {
     FileSize = size;
+    emit Q7Zip::getInstance()->compress_filesize_signal(FileSize);
     return S_OK;
 }
 
@@ -565,6 +569,7 @@ STDMETHODIMP CArchiveUpdateCallback::SetCompleted(const UInt64 * completeValue)
 #ifdef DEBUG_LOGOUT_ON
     qDebug("Compress %.2f%%", static_cast<float>(*completeValue) / FileSize * 100.0f );
 #endif
+    emit Q7Zip::getInstance()->compress_completeValue_signal(*completeValue);
     return S_OK;
 }
 
@@ -627,6 +632,7 @@ static void GetStream2(const wchar_t *name)
 #ifdef DEBUG_LOGOUT_ON
     qDebug() << "Compressing " << QString::fromWCharArray(name);
 #endif
+    emit Q7Zip::getInstance()->compressing_filename_signal(QString::fromWCharArray(name));
 }
 
 STDMETHODIMP CArchiveUpdateCallback::GetStream(UInt32 index, ISequentialInStream **inStream)
@@ -715,6 +721,8 @@ STDMETHODIMP CArchiveUpdateCallback::CryptoGetTextPassword2(Int32 *passwordIsDef
 }
 #endif
 
+Q7Zip * Q7Zip::m_q7zip = NULL;
+
 Q7Zip::Q7Zip(QObject *parent) :
     QObject(parent),
     m_7zLib(kDllName)
@@ -722,6 +730,15 @@ Q7Zip::Q7Zip(QObject *parent) :
     qRegisterMetaType<Q7Zip::Operation>();
     static_cast<void>(QObject::connect(this, SIGNAL(operation_signal_compress(const QString, const QStringList, const QString)), this, SLOT(operation_slot_compress(const QString, const QStringList, const QString)), Qt::QueuedConnection));
     static_cast<void>(QObject::connect(this, SIGNAL(operation_signal_extract(const QString, const QString)), this, SLOT(operation_slot_extract(const QString, const QString)), Qt::QueuedConnection));
+}
+
+Q7Zip *Q7Zip::getInstance(void)
+{
+    if(m_q7zip == NULL)
+    {
+        m_q7zip = new Q7Zip;
+    }
+    return m_q7zip;
 }
 
 int Q7Zip::init(void)

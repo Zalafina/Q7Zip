@@ -8,6 +8,7 @@
 #include <QDebug>
 #include <QThread>
 #include "q7zip.h"
+#include "progress_window.h"
 
 namespace Ui {
 class Q7Zip_Window;
@@ -34,6 +35,7 @@ private:
     Ui::Q7Zip_Window *ui;
     Q7Zip *m_7Zip;
     QThread *workerThread;
+    Progress_Window *progress_win;
 };
 
 #endif // Q7ZIP_WINDOW_H

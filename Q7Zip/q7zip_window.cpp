@@ -1,16 +1,18 @@
 #include "q7zip_window.h"
 #include "mfiledialog.h"
 #include "ui_q7zip_window.h"
+#include "ui_progress_window.h"
 
 Q7Zip_Window::Q7Zip_Window(QWidget *parent) :
     QDialog(parent),
     ui(new Ui::Q7Zip_Window),
     m_7Zip(NULL),
-    workerThread(NULL)
+    workerThread(NULL),
+    progress_win(new Progress_Window(this))
 {
     ui->setupUi(this);
 
-    m_7Zip = new Q7Zip();
+    m_7Zip = Q7Zip::getInstance();
     // Move Checksumer to a sub thread
     workerThread = new QThread();
     m_7Zip->moveToThread(workerThread);
@@ -18,7 +20,20 @@ Q7Zip_Window::Q7Zip_Window(QWidget *parent) :
     static_cast<void>(QObject::connect(workerThread, SIGNAL(started()), m_7Zip, SLOT(threadStarted())));
     static_cast<void>(QObject::connect(m_7Zip, SIGNAL(threadStarted_signal(int)), this, SLOT(WorkerThread_Started(int)), Qt::QueuedConnection));
     static_cast<void>(QObject::connect(m_7Zip, SIGNAL(operation_result_signal(Q7Zip::Operation, const QString, int)), this, SLOT(Operation_Result(Q7Zip::Operation, const QString, int)), Qt::QueuedConnection));
+
+    static_cast<void>(QObject::connect(m_7Zip, SIGNAL(compressing_filename_signal(const QString)), progress_win, SLOT(Compressing_FileName(const QString)), Qt::QueuedConnection));
+    static_cast<void>(QObject::connect(m_7Zip, SIGNAL(compress_filesize_signal(const quint64)), progress_win, SLOT(Compress_Range(const quint64)), Qt::QueuedConnection));
+    static_cast<void>(QObject::connect(m_7Zip, SIGNAL(compress_completeValue_signal(const quint64)), progress_win, SLOT(processbar_SetValue(const quint64)), Qt::QueuedConnection));
+
+    static_cast<void>(QObject::connect(m_7Zip, SIGNAL(extracting_filename_signal(const QString)), progress_win, SLOT(Extracting_FileName(const QString)), Qt::QueuedConnection));
+    static_cast<void>(QObject::connect(m_7Zip, SIGNAL(extract_filesize_signal(const quint64)), progress_win, SLOT(Extract_Range(const quint64)), Qt::QueuedConnection));
+    static_cast<void>(QObject::connect(m_7Zip, SIGNAL(extract_completeValue_signal(const quint64)), progress_win, SLOT(processbar_SetValue(const quint64)), Qt::QueuedConnection));
     workerThread->start();
+
+    Qt::WindowFlags flags = Qt::Dialog;
+    flags |= Qt::WindowCloseButtonHint;
+    progress_win->setWindowFlags(flags);
+    progress_win->setWindowModality(Qt::WindowModal);
 }
 
 Q7Zip_Window::~Q7Zip_Window()
@@ -50,29 +65,51 @@ void Q7Zip_Window::Operation_Result(Q7Zip::Operation operation, const QString ar
 #endif
 
     QFileInfo archive_fileinfo(archive_filename);
+    QString message;
+    QMessageBox::Icon message_type;
+    bool showmsgbox = false;
 
     if (Q7Zip::Q7ZIP_COMPRESS == operation){
         if(0 == result){
             qDebug() << archive_filename << "compress complete.";
-            QString message = "<html><head/><body><p align=\"center\">" + archive_fileinfo.fileName() + "</p><p align=\"center\"> Compress Complete.</p></body></html>";
-            QMessageBox::information(this, "Q7Zip", message);
+            message = "<html><head/><body><p align=\"center\">" + archive_fileinfo.fileName() + "</p><p align=\"center\"> Compress Complete.</p></body></html>";
+            message_type = QMessageBox::Information;
+            showmsgbox = true;
         }
         else{
             qDebug() << archive_filename << "compress failure.";
-            QString message = "<html><head/><body><p align=\"center\">" + archive_fileinfo.fileName() + "</p><p align=\"center\"> Compress Failure.</p></body></html>";
-            QMessageBox::warning(this, "Q7Zip", message);
+            message = "<html><head/><body><p align=\"center\">" + archive_fileinfo.fileName() + "</p><p align=\"center\"> Compress Failure.</p></body></html>";
+            message_type = QMessageBox::Warning;
+            showmsgbox = true;
         }
     }
     else if (Q7Zip::Q7ZIP_EXTRACT == operation){
         if(0 == result){
             qDebug() << archive_filename << "extract complete.";
-            QString message = "<html><head/><body><p align=\"center\">" + archive_fileinfo.fileName() + "</p><p align=\"center\"> Extract Complete.</p></body></html>";
-            QMessageBox::information(this, "Q7Zip", message);
+            message = "<html><head/><body><p align=\"center\">" + archive_fileinfo.fileName() + "</p><p align=\"center\"> Extract Complete.</p></body></html>";
+            message_type = QMessageBox::Information;
+            showmsgbox = true;
         }
         else{
             qDebug() << archive_filename << "extract failure.";
-            QString message = "<html><head/><body><p align=\"center\">" + archive_fileinfo.fileName() + "</p><p align=\"center\"> Extract Failure.</p></body></html>";
-            QMessageBox::warning(this, "Q7Zip", message);
+            message = "<html><head/><body><p align=\"center\">" + archive_fileinfo.fileName() + "</p><p align=\"center\"> Extract Failure.</p></body></html>";
+            message_type = QMessageBox::Warning;
+            showmsgbox = true;
+        }
+    }
+
+    if (true == showmsgbox){
+        QMessageBox msgBox(message_type, "Q7Zip", message);
+        msgBox.setStandardButtons(QMessageBox::Ok);
+        msgBox.setDefaultButton(QMessageBox::Ok);
+        int ret = msgBox.exec();
+        switch (ret)
+        {
+        case QMessageBox::Ok:
+            progress_win->accept();
+            break;
+        default:
+            break;
         }
     }
 }
@@ -124,6 +161,9 @@ void Q7Zip_Window::on_Make7zButton_clicked()
             woring_path = fileinfo.absolutePath() + "/";
 
             emit m_7Zip->operation_signal_compress(archive_filename, compress_filelist, woring_path);
+
+            progress_win->progress_ui->statusLabel->setText("Compressing");
+            progress_win->show();
         }
     }
 }
@@ -143,5 +183,8 @@ void Q7Zip_Window::on_Extract7zButton_clicked()
         }
 
         emit m_7Zip->operation_signal_extract(archive_filename, output_path);
+
+        progress_win->progress_ui->statusLabel->setText("Extracting");
+        progress_win->show();
     }
 }
