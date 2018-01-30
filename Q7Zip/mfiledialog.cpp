@@ -7,6 +7,10 @@
 MFileDialog::MFileDialog(QWidget *parent) :
     QFileDialog(parent)
 {
+    Qt::WindowFlags flags = Qt::Dialog;
+    flags |= Qt::WindowCloseButtonHint;
+    this->setWindowFlags(flags);
+
     this->setOption(QFileDialog::DontUseNativeDialog,true);
 
     // Support multiple choice

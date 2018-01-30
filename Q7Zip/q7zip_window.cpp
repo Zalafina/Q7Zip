@@ -99,6 +99,8 @@ void Q7Zip_Window::Operation_Result(Q7Zip::Operation operation, const QString ar
     }
 
     if (true == showmsgbox){
+        progress_win->progress_ui->progressBar->setEnabled(false);
+
         QMessageBox msgBox(message_type, "Q7Zip", message);
         msgBox.setStandardButtons(QMessageBox::Ok);
         msgBox.setDefaultButton(QMessageBox::Ok);
@@ -169,6 +171,7 @@ void Q7Zip_Window::on_Make7zButton_clicked()
 
             emit m_7Zip->operation_signal_compress(archive_filename, compress_filelist, woring_path);
 
+            progress_win->progress_ui->progressBar->setEnabled(true);
             progress_win->progress_ui->statusLabel->setText("Compressing");
             progress_win->show();
         }
@@ -198,6 +201,7 @@ void Q7Zip_Window::on_Extract7zButton_clicked()
 
         emit m_7Zip->operation_signal_extract(archive_filename, output_path);
 
+        progress_win->progress_ui->progressBar->setEnabled(true);
         progress_win->progress_ui->statusLabel->setText("Extracting");
         progress_win->show();
     }
