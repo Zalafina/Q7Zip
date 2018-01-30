@@ -7,6 +7,7 @@
 #include <QMessageBox>
 #include <QDebug>
 #include <QThread>
+#include <QStandardPaths>
 #include "q7zip.h"
 #include "progress_window.h"
 

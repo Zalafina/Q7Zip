@@ -116,7 +116,14 @@ void Q7Zip_Window::Operation_Result(Q7Zip::Operation operation, const QString ar
 
 void Q7Zip_Window::on_Make7zButton_clicked()
 {
+    static bool firstopen = true;
+
     MFileDialog fileDialog;
+    if (true == firstopen){
+        fileDialog.setDirectory(QStandardPaths::standardLocations(QStandardPaths::DesktopLocation).last());
+        firstopen = false;
+    }
+
     if (fileDialog.exec() == QDialog::Accepted)
     {
         QStringList compress_filelist;
@@ -170,7 +177,14 @@ void Q7Zip_Window::on_Make7zButton_clicked()
 
 void Q7Zip_Window::on_Extract7zButton_clicked()
 {
-    QString archive_filename = QFileDialog::getOpenFileName(this,
+    static bool firstopen = true;
+
+    QFileDialog ExtractDialog;
+    if (true == firstopen){
+        ExtractDialog.setDirectory(QStandardPaths::standardLocations(QStandardPaths::DesktopLocation).last());
+        firstopen = false;
+    }
+    QString archive_filename = ExtractDialog.getOpenFileName(this,
                                                     "Open File to be Extracted",
                                                     NULL,
                                                     "7z Files (*.7z)");
