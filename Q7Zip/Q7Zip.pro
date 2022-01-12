@@ -13,20 +13,30 @@ TEMPLATE = app
 
 CONFIG(debug, debug|release){
     DEFINES += DEBUG_LOGOUT_ON
-    message("Debug Build")
 
 #    DEFINES += VLD_ENABLED
 
     contains( DEFINES, VLD_ENABLED ) {
         VLD_PATH = $$PWD/../vld-2.5.1
         INCLUDEPATH += $$VLD_PATH/include
-        LIBS += -L$$VLD_PATH/lib/Win32 -lvld
-        LIBS += -L$$VLD_PATH/bin/Win32
+        contains(DEFINES, WIN64) {
+            message("WIN64 Debug Build")
+            LIBS += -L$$VLD_PATH/lib/Win64 -lvld
+            LIBS += -L$$VLD_PATH/bin/Win64
+        } else {
+            message("WIN32 Debug Build")
+            LIBS += -L$$VLD_PATH/lib/Win32 -lvld
+            LIBS += -L$$VLD_PATH/bin/Win32
+        }
     }
 }
 
 CONFIG(release, debug|release){
-    message("Release Build")
+    contains(DEFINES, WIN64) {
+        message("WIN64 Release Build")
+    } else {
+        message("WIN32 Release Build")
+    }
 }
 
 # The following define makes your compiler emit warnings if you use
@@ -45,8 +55,13 @@ DEFINES += _UNICODE
 
 INCLUDEPATH += $$PWD/7z_sdk
 
+contains(DEFINES, WIN64) {
+# Win x64 libs
+LIBS        += -L$$PWD/win_lib/x64
+} else {
 # Win x86 libs
 LIBS        += -L$$PWD/win_lib/x86
+}
 LIBS        += OleAut32.lib User32.Lib
 
 

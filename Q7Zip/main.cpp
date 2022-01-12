@@ -1,4 +1,4 @@
-#include "q7zip_window.h"
+﻿#include "q7zip_window.h"
 #include <QApplication>
 
 #ifdef VLD_ENABLED
@@ -7,6 +7,9 @@
 
 int main(int argc, char *argv[])
 {
+#if (QT_VERSION >= QT_VERSION_CHECK(5, 6, 0))
+    QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
+#endif
     QApplication a(argc, argv);
     QApplication::setStyle(QStyleFactory::create("Fusion"));
     Q7Zip_Window w;
