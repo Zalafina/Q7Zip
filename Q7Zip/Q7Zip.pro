@@ -5,6 +5,7 @@
 #-------------------------------------------------
 
 QT       += core gui
+CONFIG   += file_copies
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -64,6 +65,25 @@ LIBS        += -L$$PWD/win_lib/x86
 }
 LIBS        += OleAut32.lib User32.Lib
 
+contains(DEFINES, WIN64) {
+# 7Zip x64 Dynamic Link Library
+dll_install.files += $$PWD/7z_dll/x64/7z.dll
+} else {
+# 7Zip x86 Dynamic Link Library
+dll_install.files += $$PWD/7z_dll/x86/7z.dll
+}
+
+windows{
+    CONFIG(debug, debug|release){
+        dll_install.path = $${OUT_PWD}/debug
+    }
+
+    CONFIG(release, debug|release){
+        dll_install.path = $${OUT_PWD}/release
+    }
+}
+
+COPIES += dll_install
 
 SOURCES += \
     main.cpp \
