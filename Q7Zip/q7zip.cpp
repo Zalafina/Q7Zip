@@ -947,7 +947,12 @@ void Q7Zip::operation_slot_extract(const QString archive_name, const QString out
 {
     int operate_result = 0;
 
-    operate_result = extract(archive_name, output_path);
+    if (output_path.isEmpty()) {
+        operate_result = 1;
+    }
+    else {
+        operate_result = extract(archive_name, output_path);
+    }
 
     emit operation_result_signal(Q7Zip::Q7ZIP_EXTRACT, archive_name, operate_result);
 }

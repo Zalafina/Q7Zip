@@ -11,3 +11,5 @@ qrc_*.cpp
 ui_*.h
 Makefile*
 *-build-*
+Q7Zip/build/
+Q7Zip/out/
